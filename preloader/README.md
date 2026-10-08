@@ -126,7 +126,7 @@ Ne masquer aucun contenu du site en attendant cet évènement : si le script du 
 
 ### Variante : fichier HTML unique (export)
 
-Si le site tient dans un seul fichier HTML, coller le CSS dans une balise `<style>` du `<head>`. Coller le JavaScript dans une balise `<script>` placée **après** le bloc HTML du preloader, en fin de `<body>` (il lit le DOM au chargement). Le script d'initialisation reste dans le `<head>`, et l'attribut `onerror` n'est alors pas nécessaire.
+Si le site tient dans un seul fichier HTML, coller le CSS dans une balise `<style>` du `<head>`. Coller le JavaScript dans une balise `<script>` placée **après** le bloc HTML du preloader, en fin de `<body>` (il lit le DOM au chargement). Le script d'initialisation et la règle `<noscript>` restent dans le `<head>` ; l'attribut `onerror` n'est alors pas nécessaire.
 
 ## Configuration
 
@@ -199,3 +199,4 @@ Ces mesures ont été faites sans GPU. Valider sur appareils réels (iPhone et A
 
 - La 3D est volontairement réalisée en CSS et canvas, sans WebGL ni Three.js : le preloader reste autonome, hors ligne et en `file://`.
 - Le libellé « Wird geladen » est en allemand, comme le site exporté. Le modifier dans le bloc HTML (les `<span>` de `.lm-count` et `.lm-sr`) pour une autre langue.
+- **Content-Security-Policy stricte** : sans `'unsafe-inline'`, le script d'initialisation est bloqué. La configuration `window.LIMOSI_PRELOADER` est alors ignorée, et les états de départ ne sont pas appliqués : le logo final peut apparaître un instant avant l'intro. Le script principal fonctionne quand même. Pour un rendu complet, autoriser le hash du script d'initialisation, et `img-src data:` pour le grain de fond.
