@@ -1,0 +1,424 @@
+/* ==========================================================================
+   LIMOSI · Preloader « Imperial Signature »
+   limosi-preloader.css — aucune dépendance externe.
+
+   - Animations uniquement en transform / opacity / clip-path (GPU).
+   - Effet 3D : perspective + preserve-3d + rotations (blason, anneaux).
+   - Les états initiaux « cachés » ne s'appliquent que si <html> porte la
+     classe « lm-js » (ajoutée par le script d'en-tête) : aucun flash.
+   ========================================================================== */
+
+:root {
+  --lm-navy: #081d31;        /* bleu nuit de la marque */
+  --lm-navy-deep: #051424;   /* bleu nuit profond (pied de page de l'export) */
+  --lm-cream: #f8f5ef;       /* crème de l'export v37 */
+  --lm-gold: #d1b07b;        /* or de la marque */
+  --lm-gold-light: #f0dcae;  /* reflet de l'or */
+  --lm-gold-deep: #8d7143;   /* or ombré */
+  --lm-serif: "Limosi Serif", Georgia, "Times New Roman", serif;
+  --lm-sans: "Limosi Sans", Arial, Helvetica, sans-serif;
+  /* Délai du filet de sécurité : si le JS ne tourne pas, l'overlay se retire seul. */
+  --lm-failsafe: 10s;
+}
+
+/* ---------- Conteneur plein écran ---------------------------------------- */
+.lm-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  touch-action: none;
+  color: var(--lm-cream);
+  font-family: var(--lm-sans);
+  -webkit-font-smoothing: antialiased;
+  animation-name: lm-kill;
+  animation-duration: 0.02s;
+  animation-timing-function: linear;
+  animation-delay: var(--lm-failsafe);
+  animation-fill-mode: forwards;
+}
+
+/* Le filet ne touche qu'à la visibilité et aux clics. Les propriétés discrètes
+   basculent à 50 % : un arrondi flottant sur les longs délais ne peut plus
+   laisser l'overlay cliquable. */
+@keyframes lm-kill {
+  0%   { opacity: 1; visibility: visible; pointer-events: auto; }
+  50%  { opacity: 0; visibility: hidden;  pointer-events: none; }
+  100% { opacity: 0; visibility: hidden;  pointer-events: none; }
+}
+
+.lm-preloader.is-done,
+.lm-skip .lm-preloader {
+  display: none;
+}
+
+/* ---------- Rideaux haut et bas : même dégradé, découpés par clip-path ----- */
+.lm-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(
+    120% 90% at 50% 46%,
+    #163a60 0%,
+    #0d2842 42%,
+    var(--lm-navy) 70%,
+    var(--lm-navy-deep) 100%
+  );
+}
+
+.lm-layer--top    { clip-path: inset(0 0 50% 0); }
+.lm-layer--bottom { clip-path: inset(50% 0 0 0); }
+
+.lm-layer::after {
+  /* grain fin, presque invisible : donne de la matière au fond */
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* filets dorés sur les bords des rideaux (dessinés pendant la sortie) */
+.lm-seam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: scaleX(0);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lm-gold-light) 25%,
+    var(--lm-gold) 50%,
+    var(--lm-gold-light) 75%,
+    transparent
+  );
+}
+
+.lm-layer--top .lm-seam    { bottom: 0; }
+.lm-layer--bottom .lm-seam { top: 0; }
+
+/* ---------- Halo et poussière 3D ----------------------------------------- */
+.lm-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: auto;
+  width: min(84vmin, 720px);
+  height: min(84vmin, 720px);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgba(209, 176, 123, 0.26),
+    rgba(209, 176, 123, 0.08) 55%,
+    rgba(209, 176, 123, 0) 100%
+  );
+}
+
+.lm-dust {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ---------- Coins de cadre ----------------------------------------------- */
+.lm-corner {
+  position: absolute;
+  z-index: 2;
+  width: clamp(18px, 4vmin, 30px);
+  height: clamp(18px, 4vmin, 30px);
+  margin: clamp(20px, 5vmin, 40px);
+  border: 0 solid rgba(209, 176, 123, 0.75);
+}
+
+.lm-corner--tl { top: 0;    left: 0;  border-top-width: 1px;    border-left-width: 1px; }
+.lm-corner--tr { top: 0;    right: 0; border-top-width: 1px;    border-right-width: 1px; }
+.lm-corner--bl { bottom: 0; left: 0;  border-bottom-width: 1px; border-left-width: 1px; }
+.lm-corner--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+/* ---------- Scène centrale ------------------------------------------------ */
+.lm-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.lm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -3vh;
+  text-align: center;
+}
+
+/* Blason : conteneur en perspective → gyroscope 3D → marque */
+.lm-emblem {
+  position: relative;
+  width: clamp(150px, 26vmin, 216px);
+  height: clamp(150px, 26vmin, 216px);
+  perspective: 900px;
+  animation: lm-float 7s ease-in-out infinite;
+}
+
+.lm-gyro {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.lm-orbit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lm-orbit i {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(209, 176, 123, 0.42);
+  border-radius: 50%;
+}
+
+/* deux satellites dorés par anneau, opposés */
+.lm-orbit i::before,
+.lm-orbit i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--lm-gold-light);
+  box-shadow: 0 0 10px 2px rgba(240, 220, 174, 0.5);
+}
+
+.lm-orbit i::after {
+  top: auto;
+  bottom: -2px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  opacity: 0.7;
+}
+
+.lm-orbit--a { transform: rotateX(72deg); }
+.lm-orbit--b { transform: rotateZ(18deg) rotateY(64deg); }
+.lm-orbit--a i { animation: lm-spin 8s linear infinite; }
+.lm-orbit--b i {
+  inset: 10%;
+  border-color: rgba(209, 176, 123, 0.26);
+  animation: lm-spin-rev 12s linear infinite;
+}
+
+/* Marque : tuile navy + « L » du favicon LIMOSI (path M20 15v32h29) */
+.lm-mark {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 64%;
+  height: 64%;
+  overflow: visible;
+}
+
+.lm-mark path { fill: none; }
+.lm-mark .lm-tile { fill: rgba(7, 27, 46, 0.94); stroke: none; }
+
+.lm-mark .lm-stroke {
+  stroke: url(#lm-gold);
+  stroke-linecap: square;
+  stroke-dasharray: 100;   /* pathLength="100" : tracé animé en pourcentage */
+  stroke-dashoffset: 0;
+}
+
+.lm-mark .lm-frame { stroke-width: 0.9; stroke-opacity: 0.75; }
+.lm-mark .lm-stem  { stroke-width: 4.2; }
+.lm-mark .lm-inlay { stroke: var(--lm-gold-deep); stroke-width: 1; }
+
+/* Wordmark : lettres révélées dans un masque, reflet qui balaie le mot */
+.lm-word {
+  position: relative;
+  display: block;
+  margin: clamp(26px, 4.6vmin, 42px) -0.24em 0 0;
+  padding: 0.06em 0 0.04em;
+  overflow: hidden;
+  font-family: var(--lm-serif);
+  font-weight: 400;
+  font-size: clamp(44px, 9vmin, 92px);
+  line-height: 1.15;
+  letter-spacing: 0.24em;
+  white-space: nowrap;
+}
+
+.lm-letter {
+  display: inline-block;
+  background: linear-gradient(180deg, #fffaf0 0%, #f3e3bf 52%, #d1b07b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.lm-word::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.95) 50%, transparent 60%) no-repeat;
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+  animation: lm-sheen 1.5s cubic-bezier(0.45, 0, 0.2, 1) 1.9s both;
+}
+
+.lm-rule {
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin-top: clamp(20px, 3.4vmin, 28px);
+  background: linear-gradient(90deg, transparent, var(--lm-gold), transparent);
+}
+
+.lm-tag {
+  margin: clamp(14px, 2.2vmin, 18px) -0.42em 0 0;
+  font-family: var(--lm-sans);
+  font-size: clamp(10px, 1.5vmin, 12px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lm-gold);
+}
+
+/* ---------- Progression : filet doré + compteur -------------------------- */
+.lm-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  bottom: calc(clamp(28px, 8vh, 64px) + env(safe-area-inset-bottom, 0px));
+  width: min(300px, 72vw);
+  margin: 0 auto;
+}
+
+.lm-progress {
+  position: relative;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(248, 245, 239, 0.14);
+}
+
+.lm-progress__bar {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--lm-gold-deep), var(--lm-gold-light));
+}
+
+.lm-count {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 14px;
+  font-family: var(--lm-sans);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(248, 245, 239, 0.6);
+}
+
+.lm-count__value {
+  /* interlettrage réduit sur la valeur : « 0 % » reste serré */
+  letter-spacing: 0.04em;
+  margin-right: -0.04em;
+  color: var(--lm-cream);
+  font-variant-numeric: tabular-nums;
+}
+
+.lm-count__value [data-lm-count] {
+  display: inline-block;
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* ---------- Lecteur d'écran uniquement ----------------------------------- */
+.lm-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- États initiaux : seulement si le JS est présent -------------- */
+.lm-js .lm-glow,
+.lm-js .lm-dust,
+.lm-js .lm-corner,
+.lm-js .lm-orbit,
+.lm-js .lm-mark,
+.lm-js .lm-tag,
+.lm-js .lm-foot {
+  opacity: 0;
+}
+
+.lm-js .lm-rule { transform: scaleX(0); }
+.lm-js .lm-letter { transform: translate3d(0, 112%, 0); }
+.lm-js .lm-stroke { stroke-dashoffset: 100; opacity: 0; }
+
+/* ---------- Mode « réduction des animations » ---------------------------- */
+.is-reduced .lm-dust { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-preloader *,
+  .lm-preloader *::before,
+  .lm-preloader *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Petits écrans et paysages bas -------------------------------- */
+@media (max-height: 520px) {
+  .lm-emblem { width: 120px; height: 120px; }
+  .lm-word { font-size: 40px; }
+}
+
+/* ---------- Animations ---------------------------------------------------- */
+@keyframes lm-spin     { to { transform: rotate(360deg); } }
+@keyframes lm-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes lm-float    {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -7px, 0); }
+}
+@keyframes lm-sheen {
+  from { background-position: 130% 0; }
+  to   { background-position: -30% 0; }
+}
+
+/* ---------- Scroll bloqué pendant l'intro (posé par le JS) --------------- */
+html.lm-loading {
+  overflow: hidden;
+}

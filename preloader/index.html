@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LIMOSI · Imperial Signature — démo du preloader</title>
+  <meta name="robots" content="noindex">
+
+  <!-- ===== Intégration du preloader (à reprendre dans le <head> du site) ===== -->
+  <link rel="stylesheet" href="limosi-preloader.css">
+  <script>
+    window.LIMOSI_PRELOADER = { minDuration: 2400, maxDuration: 7000, once: false };
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('lm-js');
+      try {
+        if (window.LIMOSI_PRELOADER.once && sessionStorage.getItem('limosi-preloader-seen')) {
+          d.classList.add('lm-skip');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script src="limosi-preloader.js" defer
+          onerror="var p=document.getElementById('limosi-preloader');if(p)p.remove();document.documentElement.classList.remove('lm-js')"></script>
+  <noscript><style>.lm-preloader { display: none !important; }</style></noscript>
+  <!-- ======================================================================== -->
+
+  <style>
+    /* Maquette de site : uniquement pour la démo, à remplacer par le vrai site. */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f8f5ef;
+      color: #172a38;
+      font-family: "Limosi Sans", Arial, Helvetica, sans-serif;
+    }
+    .demo-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px clamp(20px, 5vw, 64px);
+      background: #fdfbf6;
+      border-bottom: 1px solid #e1d9ca;
+    }
+    .demo-brand { display: flex; align-items: center; gap: 12px; font-family: "Limosi Serif", Georgia, serif; font-size: 20px; letter-spacing: .22em; color: #081d31; }
+    .demo-brand svg { width: 30px; height: 30px; }
+    .demo-nav button {
+      border: 1px solid #c9ad74;
+      background: linear-gradient(110deg, #c4a16b, #e0c499 50%, #c5a16d);
+      color: #081d31;
+      padding: 10px 18px;
+      font: inherit;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .demo-hero {
+      min-height: calc(100vh - 80px);
+      display: grid;
+      place-content: center;
+      gap: 18px;
+      padding: 40px clamp(20px, 6vw, 96px);
+      background: radial-gradient(90% 80% at 80% 20%, #fffdf8 0%, #f8f5ef 60%, #efe7d8 100%);
+    }
+    .demo-hero .eyebrow { margin: 0; font-size: 12px; letter-spacing: .4em; text-transform: uppercase; color: #705848; }
+    .demo-hero h1 { margin: 0; font-family: "Limosi Serif", Georgia, serif; font-weight: 400; font-size: clamp(40px, 7vw, 88px); line-height: 1.02; color: #081d31; }
+    .demo-hero p { margin: 0; max-width: 46ch; line-height: 1.6; color: #4a5a66; }
+    .demo-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; padding: 48px clamp(20px, 6vw, 96px); }
+    .demo-card { padding: 28px; background: #fffdf8; border: 1px solid #e1d9ca; }
+    .demo-card h2 { margin: 0 0 8px; font-family: "Limosi Serif", Georgia, serif; font-weight: 400; font-size: 24px; color: #081d31; }
+    .demo-card p { margin: 0; font-size: 14px; line-height: 1.6; color: #4a5a66; }
+  </style>
+</head>
+<body>
+  <!-- ===== Preloader : premier élément de <body> ===== -->
+  <div id="limosi-preloader" class="lm-preloader" role="status" aria-live="polite">
+    <span class="lm-sr">LIMOSI, Imperial Signature. Wird geladen.</span>
+
+    <div class="lm-layer lm-layer--top"><span class="lm-seam"></span></div>
+    <div class="lm-layer lm-layer--bottom"><span class="lm-seam"></span></div>
+
+    <canvas class="lm-dust" aria-hidden="true"></canvas>
+    <div class="lm-glow" aria-hidden="true"></div>
+
+    <span class="lm-corner lm-corner--tl" aria-hidden="true"></span>
+    <span class="lm-corner lm-corner--tr" aria-hidden="true"></span>
+    <span class="lm-corner lm-corner--bl" aria-hidden="true"></span>
+    <span class="lm-corner lm-corner--br" aria-hidden="true"></span>
+
+    <div class="lm-stage" aria-hidden="true">
+      <div class="lm-hero">
+        <div class="lm-emblem">
+          <div class="lm-gyro">
+            <span class="lm-orbit lm-orbit--a"><i></i></span>
+            <span class="lm-orbit lm-orbit--b"><i></i></span>
+            <svg class="lm-mark" viewBox="0 0 64 64" focusable="false">
+              <defs>
+                <linearGradient id="lm-gold" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
+                  <stop offset="0" stop-color="#f6e7c4"/>
+                  <stop offset="0.55" stop-color="#d1b07b"/>
+                  <stop offset="1" stop-color="#8d7143"/>
+                </linearGradient>
+              </defs>
+              <path class="lm-tile" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
+              <path class="lm-stroke lm-frame" pathLength="100" data-lm-delay="0" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
+              <path class="lm-stroke lm-stem" pathLength="100" data-lm-delay="220" d="M20 15v32h29"/>
+              <path class="lm-stroke lm-inlay" pathLength="100" data-lm-delay="780" d="M28 47h21"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="lm-word" data-text="LIMOSI"><span class="lm-letter">L</span><span class="lm-letter">I</span><span class="lm-letter">M</span><span class="lm-letter">O</span><span class="lm-letter">S</span><span class="lm-letter">I</span></div>
+        <span class="lm-rule"></span>
+        <p class="lm-tag">Imperial Signature</p>
+      </div>
+    </div>
+
+    <div class="lm-foot" aria-hidden="true">
+      <div class="lm-progress"><span class="lm-progress__bar"></span></div>
+      <div class="lm-count">
+        <span>Wird geladen</span>
+        <span class="lm-count__value"><span data-lm-count>0</span>%</span>
+      </div>
+    </div>
+  </div>
+  <!-- ================================================ -->
+
+  <!-- Maquette du site (démo) -->
+  <header class="demo-nav">
+    <div class="demo-brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#0b1b2d"/><path d="M20 15v32h29" fill="none" stroke="#ecdfc6" stroke-width="4"/><path d="M28 47h21" stroke="#b7a27c" stroke-width="1"/></svg>
+      <span>LIMOSI</span>
+    </div>
+    <button type="button" onclick="location.reload()">Rejouer l’intro</button>
+  </header>
+
+  <main>
+    <section class="demo-hero">
+      <p class="eyebrow">Imperial Signature</p>
+      <h1>Votre site apparaît ici</h1>
+      <p>Maquette de démonstration : le preloader se retire automatiquement une fois la page chargée, puis révèle le contenu du site.</p>
+    </section>
+    <section class="demo-cards">
+      <article class="demo-card"><h2>Chauffeur</h2><p>Contenu factice pour vérifier la révélation des rideaux.</p></article>
+      <article class="demo-card"><h2>Flotte</h2><p>Contenu factice pour vérifier la révélation des rideaux.</p></article>
+      <article class="demo-card"><h2>Réservation</h2><p>Contenu factice pour vérifier la révélation des rideaux.</p></article>
+    </section>
+  </main>
+</body>
+</html>
