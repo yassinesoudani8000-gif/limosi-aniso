@@ -79,51 +79,16 @@
   <div id="limosi-preloader" class="lm-preloader" role="status" aria-live="polite">
     <span class="lm-sr">LIMOSI, Imperial Signature. Wird geladen.</span>
 
-    <div class="lm-layer lm-layer--top"><span class="lm-seam"></span></div>
-    <div class="lm-layer lm-layer--bottom"><span class="lm-seam"></span></div>
-
-    <canvas class="lm-dust" aria-hidden="true"></canvas>
-    <div class="lm-glow" aria-hidden="true"></div>
-
-    <span class="lm-corner lm-corner--tl" aria-hidden="true"></span>
-    <span class="lm-corner lm-corner--tr" aria-hidden="true"></span>
-    <span class="lm-corner lm-corner--bl" aria-hidden="true"></span>
-    <span class="lm-corner lm-corner--br" aria-hidden="true"></span>
-
     <div class="lm-stage" aria-hidden="true">
-      <div class="lm-hero">
-        <div class="lm-emblem">
-          <div class="lm-gyro">
-            <span class="lm-orbit lm-orbit--a"><i></i></span>
-            <span class="lm-orbit lm-orbit--b"><i></i></span>
-            <svg class="lm-mark" viewBox="0 0 64 64" focusable="false">
-              <defs>
-                <linearGradient id="lm-gold" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
-                  <stop offset="0" stop-color="#f6e7c4"/>
-                  <stop offset="0.55" stop-color="#d1b07b"/>
-                  <stop offset="1" stop-color="#8d7143"/>
-                </linearGradient>
-              </defs>
-              <path class="lm-tile" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
-              <path class="lm-stroke lm-frame" pathLength="100" data-lm-delay="0" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
-              <path class="lm-stroke lm-stem" pathLength="100" data-lm-delay="220" d="M20 15v32h29"/>
-              <path class="lm-stroke lm-inlay" pathLength="100" data-lm-delay="780" d="M28 47h21"/>
-            </svg>
-          </div>
-        </div>
-
-        <div class="lm-word" data-text="LIMOSI"><span class="lm-letter">L</span><span class="lm-letter">I</span><span class="lm-letter">M</span><span class="lm-letter">O</span><span class="lm-letter">S</span><span class="lm-letter">I</span></div>
-        <span class="lm-rule"></span>
-        <p class="lm-tag">Imperial Signature</p>
+      <div class="lm-word">
+        <div class="lm-word__text" data-text="LIMOSI">LIMOSI</div>
       </div>
+      <p class="lm-tag">Imperial Signature</p>
     </div>
 
     <div class="lm-foot" aria-hidden="true">
-      <div class="lm-progress"><span class="lm-progress__bar"></span></div>
-      <div class="lm-count">
-        <span>Wird geladen</span>
-        <span class="lm-count__value"><span data-lm-count>0</span>%</span>
-      </div>
+      <div class="lm-track"><span class="lm-bar"></span></div>
+      <div class="lm-count"><span data-lm-count>0</span>%</div>
     </div>
   </div>
   <!-- ================================================ -->

@@ -1,19 +1,19 @@
-# Preloader LIMOSI · « Imperial Signature »
+# Preloader LIMOSI · « Minimal de luxe »
 
-Préchargeur d'entrée pour le site LIMOSI : une intro de marque en 3D (CSS et canvas) qui suit le chargement réel de la page, puis s'efface pour révéler le site.
+Préchargeur d'entrée du site LIMOSI : fond bleu nuit, mot LIMOSI en or qui se lève, reflet doré qui le balaie, progression discrète. Typographie seule : pas d'image, pas de 3D, aucune dépendance.
 
-- **Zéro dépendance** : aucun framework, aucun CDN, aucune requête externe.
-- **Hors ligne et en `file://`** : fonctionne tel quel, sans serveur.
-- **Progression réelle** : documents, images, polices et évènement `load`, avec une durée minimale garantie.
+- **Très léger** : 6,3 Ko de CSS et 9,4 Ko de JavaScript non compressés, soit environ 5,6 Ko compressés.
+- **Progression réelle** : document, images, polices et évènement `load`, avec une durée minimale garantie.
+- **Hors ligne et en `file://`** : aucune requête externe.
 - **Accessible** : texte pour lecteurs d'écran, passage avec la touche Échap, réduction des mouvements respectée.
-- **Replis automatiques** : retrait par CSS après 10 s, retrait immédiat si le script ne charge pas, rien à afficher sans JavaScript.
+- **Replis automatiques** : sans JavaScript, l'overlay est masqué. Script introuvable, il est retiré aussitôt. Script bloqué, il disparaît au plus tard après 10 s.
 
 ## Contenu du dossier
 
 | Fichier | Rôle |
 | --- | --- |
-| `limosi-preloader.css` | Styles, jetons de couleur, animations 3D, filet de sécurité CSS |
-| `limosi-preloader.js` | Progression, intro et sortie, particules canvas, API publique |
+| `limosi-preloader.css` | Styles, jetons de couleur, intro en CSS, filet de sécurité |
+| `limosi-preloader.js` | Progression, sortie en fondu, API publique |
 | `index.html` | Démo : bloc d'intégration complet, sur une maquette de site |
 | `README.md` | Ce guide |
 
@@ -34,7 +34,7 @@ L'intégration tient en trois étapes. Les blocs ci-dessous sont repris tels que
 
 ### 1. Dans le `<head>`
 
-Coller ce bloc après la feuille de style du site. Le script d'initialisation doit rester inline et placé avant le premier rendu : il masque les états de départ dès le début. Le script principal est en `defer` et ne bloque pas le rendu.
+Coller ce bloc après la feuille de style du site. Le script d'initialisation doit rester inline et placé avant le premier rendu : il pose la classe `lm-js`, qui active l'intro. Le script principal est en `defer` et ne bloque pas le rendu.
 
 ```html
 <link rel="stylesheet" href="limosi-preloader.css">
@@ -65,51 +65,16 @@ Coller le bloc suivant comme **premier élément** du `<body>`. Il est autonome 
 <div id="limosi-preloader" class="lm-preloader" role="status" aria-live="polite">
   <span class="lm-sr">LIMOSI, Imperial Signature. Wird geladen.</span>
 
-  <div class="lm-layer lm-layer--top"><span class="lm-seam"></span></div>
-  <div class="lm-layer lm-layer--bottom"><span class="lm-seam"></span></div>
-
-  <canvas class="lm-dust" aria-hidden="true"></canvas>
-  <div class="lm-glow" aria-hidden="true"></div>
-
-  <span class="lm-corner lm-corner--tl" aria-hidden="true"></span>
-  <span class="lm-corner lm-corner--tr" aria-hidden="true"></span>
-  <span class="lm-corner lm-corner--bl" aria-hidden="true"></span>
-  <span class="lm-corner lm-corner--br" aria-hidden="true"></span>
-
   <div class="lm-stage" aria-hidden="true">
-    <div class="lm-hero">
-      <div class="lm-emblem">
-        <div class="lm-gyro">
-          <span class="lm-orbit lm-orbit--a"><i></i></span>
-          <span class="lm-orbit lm-orbit--b"><i></i></span>
-          <svg class="lm-mark" viewBox="0 0 64 64" focusable="false">
-            <defs>
-              <linearGradient id="lm-gold" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
-                <stop offset="0" stop-color="#f6e7c4"/>
-                <stop offset="0.55" stop-color="#d1b07b"/>
-                <stop offset="1" stop-color="#8d7143"/>
-              </linearGradient>
-            </defs>
-            <path class="lm-tile" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
-            <path class="lm-stroke lm-frame" pathLength="100" data-lm-delay="0" d="M15.5 1.5h33a14 14 0 0 1 14 14v33a14 14 0 0 1-14 14h-33a14 14 0 0 1-14-14v-33a14 14 0 0 1 14-14z"/>
-            <path class="lm-stroke lm-stem" pathLength="100" data-lm-delay="220" d="M20 15v32h29"/>
-            <path class="lm-stroke lm-inlay" pathLength="100" data-lm-delay="780" d="M28 47h21"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="lm-word" data-text="LIMOSI"><span class="lm-letter">L</span><span class="lm-letter">I</span><span class="lm-letter">M</span><span class="lm-letter">O</span><span class="lm-letter">S</span><span class="lm-letter">I</span></div>
-      <span class="lm-rule"></span>
-      <p class="lm-tag">Imperial Signature</p>
+    <div class="lm-word">
+      <div class="lm-word__text" data-text="LIMOSI">LIMOSI</div>
     </div>
+    <p class="lm-tag">Imperial Signature</p>
   </div>
 
   <div class="lm-foot" aria-hidden="true">
-    <div class="lm-progress"><span class="lm-progress__bar"></span></div>
-    <div class="lm-count">
-      <span>Wird geladen</span>
-      <span class="lm-count__value"><span data-lm-count>0</span>%</span>
-    </div>
+    <div class="lm-track"><span class="lm-bar"></span></div>
+    <div class="lm-count"><span data-lm-count>0</span>%</div>
   </div>
 </div>
 ```
@@ -140,15 +105,17 @@ window.LIMOSI_PRELOADER = {
 
 | Option | Défaut | Effet |
 | --- | --- | --- |
-| `minDuration` | `2400` | Durée minimale de l'intro. La sortie ne démarre pas avant. |
+| `minDuration` | `2400` | Durée minimale, comptée depuis le début de la navigation. La sortie ne démarre pas avant. |
 | `maxDuration` | `7000` | Limite de sécurité : la sortie est forcée passé ce délai. Si `maxDuration` est inférieur à `minDuration`, il devient `minDuration + 2000`. |
 | `once` | `false` | Si `true`, l'intro n'est jouée qu'une fois par session (`sessionStorage`). Les chargements suivants retirent l'overlay tout de suite. |
 
-Le délai du filet CSS se règle avec `--lm-failsafe` dans `limosi-preloader.css` (défaut `10s`).
+Le délai du filet CSS se règle avec `--lm-failsafe` (défaut `10s`) dans `limosi-preloader.css`.
 
-### Couleurs et typographie
+### Couleurs, typographie et réglages visuels
 
-Les jetons sont déclarés dans `:root`, en tête de `limosi-preloader.css` : `--lm-navy`, `--lm-navy-deep`, `--lm-cream`, `--lm-gold`, `--lm-gold-light`, `--lm-gold-deep`, `--lm-serif`, `--lm-sans`.
+- **Jetons** : déclarés dans `:root`, en tête de `limosi-preloader.css` (`--lm-navy`, `--lm-navy-deep`, `--lm-cream`, `--lm-gold`, `--lm-gold-light`, `--lm-gold-deep`, `--lm-serif`, `--lm-sans`).
+- **Reflet** : couleur dans `.lm-word__text::after` (`rgba(255, 238, 196, 0.95)`). Vitesse et fréquence dans `.lm-js .lm-word__text::after` (cycle de `4.4s`, première passe après `1.2s`).
+- **Progression** : pour la retirer, supprimer le bloc `.lm-foot` du markup. Le script tolère son absence.
 
 ## API
 
@@ -163,20 +130,19 @@ La touche **Échap** passe l'intro.
 ## Comportement
 
 - **Progression** : la barre suit l'avancement réel du chargement (document, images, polices, évènement `load`). Le compteur ne va jamais plus vite que le temps écoulé.
-- **Intro** (environ 2,4 s) : lueur, tuile du blason qui se déploie, tracé du « L » doré, lettres qui montent, tagline, filet et pied de page.
-- **Sortie** (environ 1,5 s) : le contenu, les coins et les particules s'effacent, les deux rideaux se séparent et révèlent le site.
-- **Réduction des mouvements** (`prefers-reduced-motion: reduce`) : pas de 3D ni de particules, un simple fondu de 480 ms, durée totale de 700 ms au plus.
-- **Souris** : le blason s'incline doucement avec le pointeur (désactivé en mode réduit et sur écran tactile).
+- **Intro** (environ 2 s) : le mot se lève depuis un masque, un reflet doré passe à 1,2 s, puis la tagline apparaît. Tant que le chargement continue, il repasse toutes les 4,4 s.
+- **Sortie** (environ 1,3 s) : le mot s'élève et s'efface, la progression disparaît, puis le voile se dissout et révèle le site.
+- **Réduction des mouvements** (`prefers-reduced-motion: reduce`) : aucune animation. Le mot reste fixe et le voile disparaît en 480 ms.
 - **Sans JavaScript** : une balise `<noscript>` masque l'overlay.
 - **Script introuvable** : `onerror` retire l'overlay et la classe `lm-js`.
-- **Script bloqué** : après 10 s, le filet CSS retire l'overlay, même si le script ne répond pas.
+- **Script bloqué** : après 10 s, le filet CSS retire l'overlay.
 
 ## Compatibilité et performance
 
-- Navigateurs récents (Chrome, Edge, Firefox, Safari) : Web Animations API, canvas 2D, `clip-path`.
-- Si `element.animate` n'est pas disponible, l'intro est ignorée et le site s'affiche immédiatement.
-- Animations sur `transform`, `opacity` et `clip-path`. Les particules sont limitées à 110, et le rendu est plafonné à un ratio de pixels de 2.
-- Poids non compressé : CSS environ 11 Ko, JS environ 16 Ko. Compresser en production (gzip ou brotli).
+- Navigateurs récents : Web Animations API et `background-clip: text` (Chrome, Edge, Firefox, Safari).
+- Si `element.animate` n'est pas disponible, le voile est retiré sans fondu.
+- Animations sur `transform` et `opacity`. Le reflet déplace un arrière-plan sur la seule zone du mot : pas de filtre, pas de canvas, pas d'image.
+- Poids : 6,3 Ko de CSS et 9,4 Ko de JavaScript non compressés, environ 2,3 Ko et 3,3 Ko compressés.
 
 ## Polices
 
@@ -184,19 +150,21 @@ Le preloader désigne les polices « Limosi Serif » et « Limosi Sans ». Elles
 
 ## Vérifications
 
-Tests automatisés dans Chromium headless, rendu logiciel :
+Tests automatisés dans Chromium headless, rendu logiciel (sans GPU) :
 
-- séquence complète : évènement `limosi:ready` émis, overlay retiré en 4 à 5 s ;
-- réduction des mouvements : overlay retiré en moins de 2 s ;
-- script bloqué : overlay retiré en moins de 800 ms ;
-- filet CSS sans JavaScript : overlay masqué à 10 s ;
+- séquence complète : `limosi:ready` émis, overlay retiré vers 4 s ;
+- `file://` : même comportement, aucune erreur console ;
+- réduction des mouvements : aucune animation, overlay retiré vers 2 s ;
+- script abandonné : overlay retiré en moins de 800 ms ;
+- script vide : overlay masqué à 10 s par le filet CSS ;
+- Échap : sortie environ 2,5 s après la touche ;
 - `once` : pas d'intro au second chargement ;
-- aucune erreur console ; pas de débordement horizontal en 390 × 844, 844 × 390 et 768 × 1024.
+- sans JavaScript : overlay masqué, maquette visible ;
+- mobile 390 × 844 : aucun débordement horizontal.
 
-Ces mesures ont été faites sans GPU. Valider sur appareils réels (iPhone et Android d'entrée de gamme) avant la mise en production.
+Valider sur appareils réels (iPhone et Android d'entrée de gamme) avant la mise en production.
 
 ## Points d'attention
 
-- La 3D est volontairement réalisée en CSS et canvas, sans WebGL ni Three.js : le preloader reste autonome, hors ligne et en `file://`.
-- Le libellé « Wird geladen » est en allemand, comme le site exporté. Le modifier dans le bloc HTML (les `<span>` de `.lm-count` et `.lm-sr`) pour une autre langue.
-- **Content-Security-Policy stricte** : sans `'unsafe-inline'`, le script d'initialisation est bloqué. La configuration `window.LIMOSI_PRELOADER` est alors ignorée, et les états de départ ne sont pas appliqués : le logo final peut apparaître un instant avant l'intro. Le script principal fonctionne quand même. Pour un rendu complet, autoriser le hash du script d'initialisation, et `img-src data:` pour le grain de fond.
+- Le texte visible se limite à « LIMOSI », « Imperial Signature » et au pourcentage. Le libellé pour lecteurs d'écran, « Wird geladen », est en allemand (`.lm-sr`) : à adapter à la langue du site.
+- **Content-Security-Policy stricte** : sans `'unsafe-inline'`, le script d'initialisation est bloqué. La configuration `window.LIMOSI_PRELOADER` est alors ignorée, et l'intro CSS n'est pas jouée : le mot reste fixe, puis le voile disparaît. Autoriser le hash du script d'initialisation pour retrouver l'intro.
