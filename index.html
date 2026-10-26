@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ANISO · Ksar Ezzit — Preloader</title>
+  <link rel="preconnect" href="https://ksar-ezzit.de" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- ============ PRELOADER ============ -->
+  <div id="preloader" aria-hidden="true">
+    <!-- Couche 1 : la mosaïque combinée de 20+ images (fond) -->
+    <div class="collage" id="collage"></div>
+
+    <!-- Couche 2 : voile sombre pour la lisibilité -->
+    <div class="veil"></div>
+
+    <!-- Couche 3 : le mot ANISO, fixe au centre -->
+    <div class="center">
+      <div class="wordmark">
+        <span class="a">A</span><span class="n">N</span><span class="i">I</span><span class="s">S</span><span class="o">O</span>
+      </div>
+      <div class="rule"></div>
+      <div class="subtitle">KSAR&nbsp;EZZIT · ORGANIC&nbsp;ESTATE · ZAGHOUAN</div>
+      <div class="meter">
+        <span class="counter" id="counter">0</span><span class="pct">%</span>
+        <div class="bar"><i id="bar"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CONTENU (révélé après le preloader) ============ -->
+  <main id="site" class="hidden">
+    <section class="hero">
+      <p class="kicker">DAS FLÜSSIGE GOLD DES MITTELMEERS</p>
+      <h1>ANISO</h1>
+      <p class="lead">Kraft Olive — Huile d'olive naturelle, née au domaine bio Ksar Ezzit, Zaghouan. Héritage familial depuis 1914.</p>
+    </section>
+  </main>
+
+  <script src="./preloader.js"></script>
+</body>
+</html>
